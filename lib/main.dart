@@ -3,6 +3,8 @@ import 'models/task.dart';
 import 'widgets/task_tile.dart';
 import 'screens/add_task_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
+import 'providers/task_provider.dart';
 
 void main() async {
 
@@ -14,7 +16,12 @@ void main() async {
 
   await Hive.openBox<Task>('tasks');
 
-  runApp(const TodoQuotesApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => TaskProvider(),
+      child: const TodoQuotesApp(),
+    ),
+  );
 }
 
 class TodoQuotesApp extends StatelessWidget {
@@ -55,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final taskProvider = Provider.of<TaskProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("My Tasks"),
@@ -80,14 +88,13 @@ class _HomeScreenState extends State<HomeScreen> {
           /// Task List
           Expanded(
             child: ListView.builder(
-              itemCount: dummyTasks.length,
+              itemCount: taskProvider.tasks.length,
               itemBuilder: (context, index) {
                 return TaskTile(
-                  task: dummyTasks[index],
+                  task: taskProvider.tasks[index],
                   onChanged: (value) {
                     setState(() {
-                      dummyTasks[index].isCompleted = value!;
-                      taskBox.putAt(index, dummyTasks[index]);
+                      taskProvider.toggleTask(index);
                     });
                   },
                 );
@@ -108,16 +115,10 @@ class _HomeScreenState extends State<HomeScreen> {
           );
 
           if (result != null) {
-            setState(() {
-              final newTask = Task(
-                title: result["title"],
-                description: result["description"],
-              );
-
-              taskBox.add(newTask);
-
-              dummyTasks = taskBox.values.toList();
-            });
+            taskProvider.addTask(
+              result["title"],
+              result["description"],
+            );
           }
 
         },
