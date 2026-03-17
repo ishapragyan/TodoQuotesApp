@@ -2,8 +2,18 @@ import 'package:flutter/material.dart';
 import 'models/task.dart';
 import 'widgets/task_tile.dart';
 import 'screens/add_task_screen.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(TaskAdapter());
+
+  await Hive.openBox<Task>('tasks');
+
   runApp(const TodoQuotesApp());
 }
 
@@ -32,11 +42,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  final List<Task> dummyTasks = [
-    Task(title: "Complete Flutter project"),
-    Task(title: "Apply for internships"),
-    Task(title: "Read Flutter documentation"),
-  ];
+  late Box<Task> taskBox;
+  List<Task> dummyTasks = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    taskBox = Hive.box<Task>('tasks');
+    dummyTasks = taskBox.values.toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onChanged: (value) {
                     setState(() {
                       dummyTasks[index].isCompleted = value!;
+                      taskBox.putAt(index, dummyTasks[index]);
                     });
                   },
                 );
@@ -93,12 +109,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
           if (result != null) {
             setState(() {
-              dummyTasks.add(
-                Task(
-                  title: result["title"],
-                  description: result["description"],
-                ),
+              final newTask = Task(
+                title: result["title"],
+                description: result["description"],
               );
+
+              taskBox.add(newTask);
+
+              dummyTasks = taskBox.values.toList();
             });
           }
 
