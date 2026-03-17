@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'models/task.dart';
 
 void main() {
   runApp(const TodoQuotesApp());
@@ -20,13 +21,19 @@ class TodoQuotesApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-  final List<String> dummyTasks = const [
-    "Complete Flutter project",
-    "Apply for internships",
-    "Read Flutter documentation"
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  final List<Task> dummyTasks = [
+    Task(title: "Complete Flutter project"),
+    Task(title: "Apply for internships"),
+    Task(title: "Read Flutter documentation"),
   ];
 
   @override
@@ -62,10 +69,14 @@ class HomeScreen extends StatelessWidget {
                   margin:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                   child: ListTile(
-                    title: Text(dummyTasks[index]),
+                    title: Text(dummyTasks[index].title),
                     trailing: Checkbox(
-                      value: false,
-                      onChanged: (value) {},
+                      value: dummyTasks[index].isCompleted,
+                      onChanged: (value) {
+                        setState(() {
+                          dummyTasks[index].isCompleted = value!;
+                        });
+                      },
                     ),
                   ),
                 );
