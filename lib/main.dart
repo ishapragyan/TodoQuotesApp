@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'models/task.dart';
+import 'widgets/task_tile.dart';
 
 void main() {
   runApp(const TodoQuotesApp());
@@ -65,20 +66,13 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ListView.builder(
               itemCount: dummyTasks.length,
               itemBuilder: (context, index) {
-                return Card(
-                  margin:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  child: ListTile(
-                    title: Text(dummyTasks[index].title),
-                    trailing: Checkbox(
-                      value: dummyTasks[index].isCompleted,
-                      onChanged: (value) {
-                        setState(() {
-                          dummyTasks[index].isCompleted = value!;
-                        });
-                      },
-                    ),
-                  ),
+                return TaskTile(
+                  task: dummyTasks[index],
+                  onChanged: (value) {
+                    setState(() {
+                      dummyTasks[index].isCompleted = value!;
+                    });
+                  },
                 );
               },
             ),
