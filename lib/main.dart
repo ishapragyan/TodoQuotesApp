@@ -5,6 +5,8 @@ import 'screens/add_task_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'providers/task_provider.dart';
+import 'providers/quote_provider.dart';
+import 'services/notification_service.dart';
 
 void main() async {
 
@@ -16,9 +18,14 @@ void main() async {
 
   await Hive.openBox<Task>('tasks');
 
+  await NotificationService.init();
+
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => TaskProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => TaskProvider()),
+        ChangeNotifierProvider(create: (_) => QuoteProvider()),
+      ],
       child: const TodoQuotesApp(),
     ),
   );
@@ -58,11 +65,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
     taskBox = Hive.box<Task>('tasks');
     dummyTasks = taskBox.values.toList();
+
+    Future.microtask(() {
+      Provider.of<QuoteProvider>(context, listen: false).fetchQuote();
+    });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     final taskProvider = Provider.of<TaskProvider>(context);
+    final quoteProvider = Provider.of<QuoteProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("My Tasks"),
@@ -72,17 +86,46 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
 
           /// Quote Card
-          Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.indigo.shade50,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Text(
-              "Stay motivated! Your productivity journey starts today.",
-              style: TextStyle(fontSize: 16),
-            ),
+          Consumer<QuoteProvider>(
+            builder: (context, quoteProvider, child) {
+              return Container(
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.indigo.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+
+                    Text(
+                      quoteProvider.quote,
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Text(
+                      "- ${quoteProvider.author}",
+                      style: const TextStyle(
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    IconButton(
+                      icon: const Icon(Icons.refresh),
+                      onPressed: () {
+                        quoteProvider.fetchQuote();
+                      },
+                    )
+                  ],
+
+                ),
+              );
+            },
           ),
 
           /// Task List

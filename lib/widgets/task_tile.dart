@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/task.dart';
+import '../services/notification_service.dart';
 
 class TaskTile extends StatelessWidget {
   final Task task;
@@ -23,9 +24,25 @@ class TaskTile extends StatelessWidget {
             task.isCompleted ? TextDecoration.lineThrough : null,
           ),
         ),
-        trailing: Checkbox(
-          value: task.isCompleted,
-          onChanged: onChanged,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+
+            IconButton(
+              icon: const Icon(Icons.notifications),
+              onPressed: () {
+                NotificationService.showNotification(
+                  title: "Task Reminder",
+                  body: task.title,
+                );
+              },
+            ),
+
+            Checkbox(
+              value: task.isCompleted,
+              onChanged: onChanged,
+            ),
+          ],
         ),
       ),
     );

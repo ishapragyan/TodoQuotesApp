@@ -1,16 +1,132 @@
-# todo_quotes_app
+# TodoQuotesApp
 
-A new Flutter project.
+A simple and clean **To-Do List App with Motivational Quotes** built using Flutter.
 
-## Getting Started
+This project was created to improve my skills in:
+- Flutter UI development
+- Local database (Hive)
+- State management (Provider)
+- API integration
+- Mobile app features like notifications
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## Features
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+✅ Add, view, and manage tasks  
+✅ Mark tasks as completed  
+✅ Persistent storage using Hive (offline support)  
+✅ Motivational quotes from API  
+✅ Refresh quotes anytime  
+✅ Task reminder notifications  
+✅ Clean and minimal UI
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## Screenshots
+
+![Add Task Screen](asset/screenshot/todoquote_app_addt_task.jpg)
+![App Features](asset/screenshot/todoquote_app_feature.jpg)
+![Home Screen](asset/screenshot/todoquote_app_homescreen.jpg)
+
+---
+
+## Tech Stack
+
+- **Flutter**
+- **Dart**
+- **Hive** (Local Database)
+- **Provider** (State Management)
+- **HTTP** (API Calls)
+- **flutter_local_notifications** (Reminders)
+
+---
+
+##  Project Structure
+
+```text
+lib/
+├── models/
+│ task.dart
+│
+├── providers/
+│ task_provider.dart
+│ quote_provider.dart
+│
+├── services/
+│ quote_service.dart
+│ notification_service.dart
+│
+├── screens/
+│ add_task_screen.dart
+│
+├── widgets/
+│ task_tile.dart
+│
+└── main.dart
+```
+
+---
+
+## API Used
+
+- ZenQuotes API (for motivational quotes)
+
+---
+
+##  Getting Started
+
+1. Clone the repository
+```bash
+git clone https://github.com/ishapragyan/TodoQuotesApp.git
+```
+
+2. Navigate to project folder
+
+```bash
+cd TodoQuotesApp
+```
+
+3. Install dependencies
+
+```bash
+flutter pub get
+```
+
+4. Run the app
+
+```bash
+flutter run
+```
+
+---
+
+## What I Learned
+
+- How to structure a Flutter project properly
+- Managing state using Provider
+- Storing data locally using Hive
+- Fetching data from APIs
+- Implementing local notifications
+
+---
+
+## Future Improvements
+
+- Add task categories
+- Add due date & scheduling
+- Improve UI/UX animations
+- Dark mode support
+- Swipe to delete tasks
+
+---
+
+## Author
+
+** Made by Isha Pragyan Acharya **
+
+---
+
+## If you like this project
+
+Give it a star on GitHub!
